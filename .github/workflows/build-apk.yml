@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: 拉取源码
         uses: actions/checkout@v4
@@ -16,9 +16,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: 更换国内apt源 + 安装系统依赖
+      - name: 安装系统依赖
         run: |
-          sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
           sudo apt update -y
           sudo apt install -y --fix-missing git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
