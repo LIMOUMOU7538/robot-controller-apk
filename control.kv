@@ -1,0 +1,406 @@
+#:import dp kivy.metrics.dp
+#:import sp kivy.metrics.sp
+
+<Label>:
+    color: 0.933, 0.933, 0.933, 1
+    font_size: sp(12)
+    font_name: app.cjk_font
+
+<Panel>:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: self.bg_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(4)]
+        Color:
+            rgba: self.line_color
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, dp(4))
+            width: 1
+
+<Chip>:
+    halign: 'center'
+    valign: 'middle'
+    text_size: self.width - dp(8), self.height
+    font_size: sp(12)
+    font_name: app.cjk_font
+    canvas.before:
+        Color:
+            rgba: 0.188, 0.22, 0.259, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(4)]
+        Color:
+            rgba: self.border_rgba
+        Line:
+            rounded_rectangle: (self.x, self.y, self.width, self.height, dp(4))
+            width: 1
+
+<FlatButton>:
+    font_size: sp(12)
+    font_name: app.cjk_font
+    color: (0, 0, 0, 1) if (self.active or self.state == 'down') else (1, 1, 1, 1)
+
+<EditField>:
+    multiline: False
+    font_size: sp(12)
+    font_name: app.cjk_font
+
+<LogView>:
+    multiline: True
+    readonly: True
+
+<ControlRoot>:
+    orientation: 'vertical'
+    padding: dp(6)
+    spacing: dp(5)
+    canvas.before:
+        Color:
+            rgba: 0.133, 0.157, 0.188, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    # ================= 顶部三路状态 =================
+    BoxLayout:
+        size_hint_y: None
+        height: dp(24)
+        spacing: dp(5)
+        Chip:
+            id: chip_wheel
+            text: '驱动轮 【未连接】'
+        Chip:
+            id: chip_arm
+            text: '机械臂 【未连接】'
+        Chip:
+            id: chip_cam
+            text: '摄像头 【未连接】'
+
+    # ================= 第一行：终端 / 视频 / 连接设置 =================
+    BoxLayout:
+        size_hint_y: 0.62
+        spacing: dp(5)
+
+        LogView:
+            id: terminal
+            size_hint_x: 0.16
+            hint_text: '终端信息'
+
+        Panel:
+            size_hint_x: 0.62
+            padding: dp(2)
+            bg_color: 0.106, 0.125, 0.153, 1
+            Image:
+                id: cam_view
+                fit_mode: 'contain'
+                # 没有纹理时 Image 会画成纯白方块，这里让它透明露出深色底
+                color: (1, 1, 1, 1) if self.texture else (0, 0, 0, 0)
+
+        Panel:
+            id: conn_panel
+            size_hint_x: 0.22
+            padding: dp(5)
+            spacing: dp(3)
+
+            Label:
+                text: '连接设置'
+                size_hint_y: None
+                height: dp(14)
+                halign: 'left'
+                valign: 'middle'
+                text_size: self.size
+
+            # ---- 驱动轮 ----
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(46)
+                spacing: dp(2)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    Label:
+                        text: '驱动轮'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+                        size_hint_x: 0.34
+                    FlatButton:
+                        text: '连接'
+                        size_hint_x: 0.33
+                        on_release: app.connect_channel(0)
+                    FlatButton:
+                        text: '断开'
+                        size_hint_x: 0.33
+                        on_release: app.disconnect_channel(0)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    EditField:
+                        id: ip_wheel
+                        text: '10.54.146.53'
+                        size_hint_x: 0.68
+                    EditField:
+                        id: port_wheel
+                        text: '8765'
+                        size_hint_x: 0.32
+
+            # ---- 机械臂 ----
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(46)
+                spacing: dp(2)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    Label:
+                        text: '机械臂'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+                        size_hint_x: 0.34
+                    FlatButton:
+                        text: '连接'
+                        size_hint_x: 0.33
+                        on_release: app.connect_channel(1)
+                    FlatButton:
+                        text: '断开'
+                        size_hint_x: 0.33
+                        on_release: app.disconnect_channel(1)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    EditField:
+                        id: ip_arm
+                        text: '10.54.146.53'
+                        size_hint_x: 0.68
+                    EditField:
+                        id: port_arm
+                        text: '8766'
+                        size_hint_x: 0.32
+
+            # ---- 摄像头 ----
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: dp(46)
+                spacing: dp(2)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    Label:
+                        text: '摄像头'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+                        size_hint_x: 0.34
+                    FlatButton:
+                        text: '连接'
+                        size_hint_x: 0.33
+                        on_release: app.connect_channel(2)
+                    FlatButton:
+                        text: '断开'
+                        size_hint_x: 0.33
+                        on_release: app.disconnect_channel(2)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(22)
+                    spacing: dp(4)
+                    EditField:
+                        id: ip_cam
+                        text: '0.0.0.0'
+                        size_hint_x: 0.68
+                    EditField:
+                        id: port_cam
+                        text: '8080'
+                        size_hint_x: 0.32
+
+    # ================= 第二行：摇杆 / 速度 / 机械臂 =================
+    BoxLayout:
+        size_hint_y: 0.38
+        spacing: dp(5)
+
+        Panel:
+            size_hint_x: 0.26
+            padding: dp(4)
+            spacing: dp(3)
+            BoxLayout:
+                size_hint_y: None
+                height: dp(22)
+                spacing: dp(4)
+                Label:
+                    text: '轮盘/按钮'
+                    halign: 'left'
+                    valign: 'middle'
+                    text_size: self.size
+                FlatButton:
+                    text: '切换'
+                    size_hint_x: None
+                    width: dp(44)
+                    on_release: app.toggle_mode()
+            JoystickPad:
+                id: pad
+
+        Panel:
+            size_hint_x: 0.24
+            padding: dp(5)
+            spacing: dp(4)
+
+            Label:
+                text: '驱动轮速度'
+                size_hint_y: None
+                height: dp(14)
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.size
+            BoxLayout:
+                size_hint_y: None
+                height: dp(26)
+                spacing: dp(4)
+                FlatButton:
+                    id: spd_w0
+                    text: '慢'
+                    on_release: app.set_speed('wheel', '慢')
+                FlatButton:
+                    id: spd_w1
+                    text: '中'
+                    on_release: app.set_speed('wheel', '中')
+                FlatButton:
+                    id: spd_w2
+                    text: '快'
+                    on_release: app.set_speed('wheel', '快')
+
+            Label:
+                text: '机械臂速度'
+                size_hint_y: None
+                height: dp(14)
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.size
+            BoxLayout:
+                size_hint_y: None
+                height: dp(26)
+                spacing: dp(4)
+                FlatButton:
+                    id: spd_a0
+                    text: '慢'
+                    on_release: app.set_speed('arm', '慢')
+                FlatButton:
+                    id: spd_a1
+                    text: '中'
+                    on_release: app.set_speed('arm', '中')
+                FlatButton:
+                    id: spd_a2
+                    text: '快'
+                    on_release: app.set_speed('arm', '快')
+
+            Widget:
+
+        Panel:
+            size_hint_x: 0.50
+            padding: dp(5)
+            spacing: dp(2)
+
+            Label:
+                text: '机械臂控制区'
+                size_hint_y: None
+                height: dp(14)
+                halign: 'center'
+                valign: 'middle'
+                text_size: self.size
+
+            GridLayout:
+                cols: 4
+                spacing: dp(4)
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(2)
+                    Label:
+                        text: '夹子'
+                        size_hint_y: None
+                        height: dp(14)
+                    FlatButton:
+                        text: '↑'
+                        on_press: app.start_arm_press(0, 5)
+                        on_release: app.stop_arm_press()
+                    FlatButton:
+                        text: '↓'
+                        on_press: app.start_arm_press(0, -5)
+                        on_release: app.stop_arm_press()
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(2)
+                    Label:
+                        text: '夹子旋转'
+                        size_hint_y: None
+                        height: dp(14)
+                    FlatButton:
+                        text: '↑'
+                        on_press: app.start_arm_press(1, 5)
+                        on_release: app.stop_arm_press()
+                    FlatButton:
+                        text: '↓'
+                        on_press: app.start_arm_press(1, -5)
+                        on_release: app.stop_arm_press()
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(2)
+                    Label:
+                        text: '中臂'
+                        size_hint_y: None
+                        height: dp(14)
+                    FlatButton:
+                        text: '↑'
+                        on_press: app.start_arm_press(2, 5)
+                        on_release: app.stop_arm_press()
+                    FlatButton:
+                        text: '↓'
+                        on_press: app.start_arm_press(2, -5)
+                        on_release: app.stop_arm_press()
+
+                BoxLayout:
+                    orientation: 'vertical'
+                    spacing: dp(2)
+                    Label:
+                        text: '大臂'
+                        size_hint_y: None
+                        height: dp(14)
+                    FlatButton:
+                        text: '↑'
+                        on_press: app.start_arm_press(3, 5)
+                        on_release: app.stop_arm_press()
+                    FlatButton:
+                        text: '↓'
+                        on_press: app.start_arm_press(3, -5)
+                        on_release: app.stop_arm_press()
+
+    # ================= 底部状态栏 =================
+    BoxLayout:
+        size_hint_y: None
+        height: dp(16)
+        Label:
+            id: status_conn
+            text: '连接：驱动轮× 机械臂× 摄像头×'
+            halign: 'left'
+            valign: 'middle'
+            text_size: self.size
+            size_hint_x: 0.5
+        Label:
+            id: status_mode
+            text: '模式：摇杆'
+        Label:
+            id: status_fps
+            text: '帧率：--'
