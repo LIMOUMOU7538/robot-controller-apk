@@ -16,6 +16,13 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: 缓存Buildozer NDK/SDK
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.buildozer
+          key: buildozer-cache-${{ hashFiles('buildozer.spec') }}
+
       - name: 安装系统依赖
         run: |
           sudo apt update -y
