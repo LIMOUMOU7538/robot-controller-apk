@@ -34,14 +34,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer kivy
 
-      - name: 预接受Android SDK许可证
+      - name: Buildozer编译APK（自动同意SDK许可）
         run: |
           export ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
-          yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --licenses
-
-      - name: Buildozer编译APK
-        run: |
-          buildozer -v android debug
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          yes | buildozer -v android debug
 
       - name: 上传APK成品
         uses: actions/upload-artifact@v4
