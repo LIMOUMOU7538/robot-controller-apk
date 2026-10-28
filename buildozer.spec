@@ -11,8 +11,8 @@ source.include_exts = py,kv,png,jpg,jpeg,json,atlas
 
 version = 1.0
 
-# websockets 是纯 Python 包，p4a 会直接 pip 安装
-requirements = python3,kivy==2.3.0,websockets
+# websockets锁定稳定版本，规避p4a编译异常
+requirements = python3,kivy==2.3.0,websockets==12.0
 
 # 手机横屏复刻桌面布局
 orientation = landscape
@@ -23,7 +23,8 @@ android.api = 33
 android.minapi = 24
 android.archs = arm64-v8a
 
-# 摄像头走明文 ws:// / udp://，安卓 9+ 必须允许明文流量
+# 安卓9+ 允许明文ws://、UDP通信，关键配置，不加无法局域网连接小车
+android.uses_cleartext_traffic = True
 android.allow_backup = True
 
 [buildozer]
