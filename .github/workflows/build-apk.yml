@@ -2,7 +2,7 @@ name: 构建Kivy机器人APK
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # 支持手动点击触发打包
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,17 +16,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: 系统依赖
+      - name: 更换国内apt源 + 安装系统依赖
         run: |
-          sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+          sudo apt update -y
+          sudo apt install -y --fix-missing git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
-      - name: 安装Python依赖
+      - name: 升级pip，安装python包
         run: |
           python -m pip install --upgrade pip setuptools wheel
           pip install buildozer kivy
 
-      - name: 编译APK
+      - name: Buildozer编译APK
         run: |
           buildozer -v android debug
 
@@ -35,4 +36,3 @@ jobs:
         with:
           name: robot-apk
           path: bin/*.apk
-
